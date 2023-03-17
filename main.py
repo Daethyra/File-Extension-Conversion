@@ -23,8 +23,8 @@ def process_txt(file, keyword):
         content = f.read()
     return content.split(keyword)
 
-def process_jpeg(file, keyword):
-    pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+def process_jpeg(file, keyword, tess_path):
+    pytesseract.pytesseract.tesseract_cmd = tess_path
     img = Image.open(file)
     text = pytesseract.image_to_string(img)
     return text.split(keyword)
@@ -60,7 +60,11 @@ if __name__ == "__main__":
     elif file_extension.lower() == ".txt":
         extracted_data = process_txt(file, keyword)
     elif file_extension.lower() == ".jpeg" or file_extension.lower() == ".jpg":
-        extracted_data = process_jpeg(file, keyword)
+        tess_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+        if not os.path.isfile(tess_path):
+            print("Tesseract executable not found!")
+            sys.exit()
+        extracted_data = process_jpeg(file, keyword, tess_path)
     elif file_extension.lower() == ".html":
         extracted_data = process_html(file, keyword)
     else:
