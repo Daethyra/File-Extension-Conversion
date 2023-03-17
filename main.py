@@ -1,40 +1,14 @@
 import os
 import sys
-import PyPDF2
-import pytesseract
-from PIL import Image
-from bs4 import BeautifulSoup
-import requests
-
-def process_pdf(file, keyword):
-    with open(file, "rb") as f:
-        pdf_reader = PyPDF2.PdfFileReader(f)
-        num_pages = pdf_reader.numPages
-        extracted_text = ""
-
-        for page in range(num_pages):
-            page_obj = pdf_reader.getPage(page)
-            extracted_text += page_obj.extractText()
-
-    return extracted_text.split(keyword)
-
-def process_txt(file, keyword):
-    with open(file, "r") as f:
-        content = f.read()
-    return content.split(keyword)
-
-def process_jpeg(file, keyword, tess_path):
-    pytesseract.pytesseract.tesseract_cmd = tess_path
-    img = Image.open(file)
-    text = pytesseract.image_to_string(img)
-    return text.split(keyword)
-
-def process_html(file, keyword):
-    with open(file, "r") as f:
-        content = f.read()
-    soup = BeautifulSoup(content, "html.parser")
-    text = soup.get_text()
-    return text.split(keyword)
+from pdf_processing import process_pdf
+from txt_processing import process_txt
+from jpeg_processing import process_jpeg
+from html_processing import process_html
+from encoding_handling import read_file_with_encoding
+from tokenization_normalization import tokenize_and_normalize
+from flair_ner_extraction import load_flair_ner_model, extract_named_entities_flair
+from text_summarization import summarize_text
+from parallel_processing import process_file_parallel
 
 def save_to_processed_data(data, filename):
     if not os.path.exists("processed_data"):
@@ -44,9 +18,9 @@ def save_to_processed_data(data, filename):
         for item in data:
             f.write("%s\n" % item)
 
-if __name__ == "__main__":
+def main():
     file = input("Enter the file path: ")
-    keyword = input("Enter the keyword to parse: ")
+    delimiters = input("Enter the delimiters (separated by '|'): ")
 
     if not os.path.isfile(file):
         print("File not found!")
@@ -55,21 +29,30 @@ if __name__ == "__main__":
     filename, file_extension = os.path.splitext(file)
     output_filename = os.path.basename(filename) + "_processed.txt"
 
+    file_content = read_file_with_encoding(file)
+    
     if file_extension.lower() == ".pdf":
-        extracted_data = process_pdf(file, keyword)
+        extracted_text = process_pdf(file, delimiters)
     elif file_extension.lower() == ".txt":
-        extracted_data = process_txt(file, keyword)
+        extracted_text = process_txt(file, delimiters)
     elif file_extension.lower() == ".jpeg" or file_extension.lower() == ".jpg":
-        tess_path = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-        if not os.path.isfile(tess_path):
-            print("Tesseract executable not found!")
-            sys.exit()
-        extracted_data = process_jpeg(file, keyword, tess_path)
+        extracted_text = process_jpeg(file, delimiters)
     elif file_extension.lower() == ".html":
-        extracted_data = process_html(file, keyword)
+        extracted_text = process_html(file, delimiters)
     else:
         print("Unsupported file type!")
         sys.exit()
 
-    save_to_processed_data(extracted_data, output_filename)
+    tokenized_text = tokenize_and_normalize(extracted_text)
+
+    # Load Flair NER model and extract named entities
+    flair_model = load_flair_ner_model()
+    named_entities = extract_named_entities_flair(extracted_text, flair_model)
+
+    summarized_text = summarize_text(extracted_text)
+
+    save_to_processed_data(tokenized_text, output_filename)
     print(f"Processed data saved to: processed_data/{output_filename}")
+
+if __name__ == "__main__":
+    main()
