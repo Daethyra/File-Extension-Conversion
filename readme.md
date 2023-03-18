@@ -1,4 +1,4 @@
-# Multi-Filetype Data Parser
+# Multi-File-Extension Data Parser & Aggregator
 
 This Python application allows you to extract data based on a user-input keyword from various file types, including PDF, TXT, JPEG, and HTML. The extracted data is then saved in a subfolder named `processed_data`.
 
