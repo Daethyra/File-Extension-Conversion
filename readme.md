@@ -1,5 +1,3 @@
-# PDF Conversion Tool
-
 This Python script allows for easy conversion of PDF files to various formats including PDF, JPEG, and HTML.
 
 ## Usage
@@ -27,6 +25,3 @@ This script requires the following Python packages to be installed:
 
 To convert a PDF file to a series of JPEG images:
 - *python main.py input.pdf output_folder jpeg*
-
-To convert a DOCX file to a PDF:
-- *python main.py input.docx output.pdf pdf*

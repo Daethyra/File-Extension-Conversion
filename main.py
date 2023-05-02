@@ -69,7 +69,7 @@ def convert_to_html(input_file, input_extension, output_file):
             for i, image in enumerate(images):
                 buffer = BytesIO()
                 image.save(buffer, 'JPEG')
-                img_base64 = base64.b64encode(buffer.getvalue()).decode() # 'base64 is not defined'
+                img_base64 = base64.b64encode(buffer.getvalue()).decode()
                 f.write(f'<img src="data:image/jpeg;base64,{img_base64}" alt="Page {i+1}" width="100%" /><br><br>')
             f.write('</body></html>')
     elif input_extension in ['.docx', '.DOCX']:
