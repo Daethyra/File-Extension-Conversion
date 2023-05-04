@@ -16,12 +16,11 @@ A Python-based console application to convert various file formats, such as HTML
 2. Ensure that you have Python 3.6+ installed on your system.
 3. Install the required dependencies by running:
 
-```bash
-pip install -r requirements.txt
+```pip install -r requirements.txt```
 
 # Usage 
 To use the script, navigate to the directory containing the source code and run the following command:
-python main.py <input_file>
+```python main.py <input_file>```
 
 Replace <input_file> with the path to the file you want to convert, or the URL of the file.
 
