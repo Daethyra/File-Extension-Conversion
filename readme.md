@@ -1,27 +1,37 @@
-This Python script allows for easy conversion of PDF files to various formats including PDF, JPEG, and HTML.
+# Multi-Type File Parser (MFE-Parse)
 
-## Usage
+A Python-based console application to convert various file formats, such as HTML, images, and documents, into PDF files.
 
-To use this script, provide the input file path, the output file path, and the desired conversion type as arguments when running the script.
+## Features
 
-- *python main.py <input_file> <output_file> <conversion_type>*
+- Accepts local files and URLs as input.
+- Supports various file formats, including HTML, images (JPEG, PNG, BMP), and documents (DOCX, ODT, TXT).
+- Automatically detects the input file's format and handles it accordingly.
+- Improved error handling, providing informative error messages.
+- Flexible: supports additional document formats via Pandoc conversion.
 
+## Installation
 
-The following conversion types are supported:
-- pdf: Converts the input file to a PDF.
-- jpeg: Converts the input file to a series of JPEG images.
-- html: Converts the input file to an HTML file.
+1. Clone this repository or download the source code.
+2. Ensure that you have Python 3.6+ installed on your system.
+3. Install the required dependencies by running:
 
-## Dependencies
+```bash
+pip install -r requirements.txt
 
-This script requires the following Python packages to be installed:
-- PyMuPDF
-- pdf2image
-- html2text
-- docx2txt
-- pillow
+# Usage 
+To use the script, navigate to the directory containing the source code and run the following command:
+python main.py <input_file>
 
-## Example Usage
+Replace <input_file> with the path to the file you want to convert, or the URL of the file.
 
-To convert a PDF file to a series of JPEG images:
-- *python main.py input.pdf output_folder jpeg*
+The script will generate a PDF file in the same directory as the input file, with the same name and an _output suffix.
+
+# Dependencies
+pypandoc - A Python wrapper for Pandoc, the universal document converter.
+img2pdf - A Python library to convert images to PDF without losing quality.
+requests - A popular Python library for making HTTP requests.
+beautifulsoup4 - A library for pulling data out of HTML and XML files.
+
+License
+This project is licensed under the  License. See the LICENSE file for details.
