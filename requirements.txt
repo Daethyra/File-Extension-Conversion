@@ -1,5 +1,5 @@
-PyMuPDF
+img2pdf
 pdf2image
-html2text
-docx2txt
-pillow
+fitz
+pypandoc
+requests
