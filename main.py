@@ -8,7 +8,7 @@ import fitz
 import requests
 from urllib.parse import urlparse
 
-pdflatex_path = r"C:\Users\dae\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe"
+pdflatex_path = r"C:\Users\{user}\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe"
 
 def is_url(input_path):
     try:
