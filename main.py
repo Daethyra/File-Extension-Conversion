@@ -8,7 +8,10 @@ import fitz
 import requests
 from urllib.parse import urlparse
 
-pdflatex_path = r"C:\Users\{user}\AppData\Local\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe"
+pdflatex_path = shutil.which("pdflatex")
+if not pdflatex_path:
+    print("pdflatex not found. Please make sure it is installed and available in the system's PATH variable.")
+    sys.exit(1)
 
 def is_url(input_path):
     try:
