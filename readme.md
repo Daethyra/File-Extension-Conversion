@@ -14,9 +14,7 @@ A Python-based console application to convert various file formats, such as HTML
 
 1. Clone this repository or download the source code.
 2. Ensure that you have Python 3.6+ installed on your system.
-3. Install the required dependencies by running:
-
-```pip install -r requirements.txt```
+3. Install the required dependencies by running: ```pip install -r requirements.txt```
 
 # Usage 
 To use the script, navigate to the directory containing the source code and run the following command:
