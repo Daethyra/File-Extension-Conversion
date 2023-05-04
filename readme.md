@@ -34,4 +34,4 @@ requests - A popular Python library for making HTTP requests.
 beautifulsoup4 - A library for pulling data out of HTML and XML files.
 
 License
-This project is licensed under the  License. See the LICENSE file for details.
+This project is licensed under the GNU AFFERO GENERAL PUBLIC LICENSE License. See the LICENSE file for details.
