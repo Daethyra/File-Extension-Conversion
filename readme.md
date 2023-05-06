@@ -17,7 +17,9 @@ A Python-based console application to convert various file formats, such as HTML
 3. Install the required dependencies by running: ```pip install -r requirements.txt```
 
 # Usage 
-To use the script, navigate to the directory containing the source code and run the following command:
+To use the script, first replace the {user} in `main.py` with your username, or otherwise point the program to the correct path.
+
+Then, navigate to the directory containing the source code and run the following command:
 ```python main.py <input_file>```
 
 Replace <input_file> with the path to the file you want to convert, or the URL of the file.
