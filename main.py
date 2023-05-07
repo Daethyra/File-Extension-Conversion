@@ -30,6 +30,18 @@ class Converter:
         else:
             pypandoc.convert_file(self.input_file, 'pdf', outputfile=output_file, extra_args=['--pdf-engine', 'pdflatex', '--quiet'])
 
+    def to_odt(self, output_file):
+        if self.input_extension in ['.txt', '.TXT', '.docx', '.DOCX']:
+            pypandoc.convert_file(self.input_file, 'odt', outputfile=output_file)
+        else:
+            raise ValueError("Conversion to ODT is not supported for this file type")
+
+    def to_docx(self, output_file):
+        if self.input_extension in ['.txt', '.TXT', '.odt', '.ODT']:
+            pypandoc.convert_file(self.input_file, 'docx', outputfile=output_file)
+        else:
+            raise ValueError("Conversion to DOCX is not supported for this file type")
+
     def to_json(self, output_file):
         if self.input_extension in ['.html', '.htm']:
             df = pd.read_html(self.input_file)[0]
@@ -43,7 +55,7 @@ class Converter:
             df.to_csv(output_file, index=False)
         else:
             raise ValueError("Conversion to CSV is not supported for this file type")
-
+        
     def to_yaml(self, output_file):
         if self.input_extension in ['.html', '.htm']:
             df = pd.read_html(self.input_file)[0]
@@ -75,7 +87,6 @@ def is_url(input_path):
     except ValueError:
         return False
 
-
 def download_file(url, local_path):
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
@@ -99,6 +110,10 @@ def process_file(input_file, output_format):
             converter.to_csv(output_file)
         elif output_format == '.yaml':
             converter.to_yaml(output_file)
+        elif output_format == '.odt':
+            converter.to_odt(output_file)
+        elif output_format == '.docx':
+            converter.to_docx(output_file)
         else:
             print(f"Unsupported output format: {output_format}")
             sys.exit(1)
@@ -108,28 +123,48 @@ def process_file(input_file, output_format):
     except ValueError as e:
         print(f"Error: {str(e)}")
 
-
 def batch_process(directory_path, output_format, max_workers=4):
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         for root, _, files in os.walk(directory_path):
             for file in files:
                 file_path = os.path.join(root, file)
                 executor.submit(process_file, file_path, output_format)
+                
+def print_files_in_cwd():
+    print("Current working directory contents:")
+    for entry in os.listdir():
+        print(f"- {entry}")
 
+def print_available_conversion_types():
+    supported_formats = ['.pdf', '.json', '.csv', '.yaml', '.jpeg', '.odt', '.docx']
+    print(f"Supported output formats: {', '.join(supported_formats)}")
 
 if __name__ == "__main__":
+    if not os.path.exists("Conversions"):
+        os.makedirs("Conversions")
+        print("Created 'Conversions' folder for output files.")
+        print("Usage instructions:")
+        print("  Interactive mode: python main.py")
+        print("  Batch mode: python main.py --batch <directory_path> <output_format>")
     if len(sys.argv) == 1:
         print("Interactive mode.")
         print("Enter 'quit' at any time to exit.")
+        print_files_in_cwd()
+        print_available_conversion_types()
+
         input_path = input("Enter the input file path or URL: ")
         if input_path.lower() == "quit":
             sys.exit(0)
-        output_format = input("Enter the desired output format (e.g., .pdf, .json, .csv, .yaml, .jpeg): ").lower()
-        if output_format.lower() == "quit":
-            sys.exit(0)
 
-        if not output_format.startswith('.'):
-            output_format = '.' + output_format
+        if os.path.isdir(input_path):  # Check if the input path is a directory
+            output_format = input("Enter the desired output format (e.g., .pdf, .json, .csv, .yaml, .jpeg): ").lower()
+            if output_format.lower() == "quit":
+                sys.exit(0)
+
+            if not output_format.startswith('.'):
+                output_format = '.' + output_format
+
+            batch_process(input_path, output_format)  # Start batch processing
 
         if is_url(input_path):
             local_filename = input_path.split("/")[-1]
@@ -145,7 +180,7 @@ if __name__ == "__main__":
         try:
             input_file = os.path.abspath(input_file)
             input_filename = os.path.splitext(input_file)[0]
-            output_file = f"{input_filename}_output{output_format}"
+            output_file = f"Conversions/{input_filename}_output{output_format}"
             converter = Converter(input_file)
             if output_format == '.pdf':
                 converter.to_pdf(output_file)
@@ -155,28 +190,36 @@ if __name__ == "__main__":
                 converter.to_csv(output_file)
             elif output_format == '.yaml':
                 converter.to_yaml(output_file)
+            elif output_format == '.odt':
+                converter.to_odt(output_file)
+            elif output_format == '.docx':
+                converter.to_docx(output_file)
+            elif output_format == '.jpeg':
+                converter.to_jpeg(output_file)
             else:
                 raise ValueError(f"Unsupported output format: {output_format}")
             print(f"Successfully converted {input_file} to {output_file}")
+            logging.info(f"Successfully converted {input_file} to {output_file}")
         except Exception as e:
             print(f"Error converting {input_file}: {str(e)}")
+            logging.error(f"Error converting {input_file}: {str(e)}")
 
     elif sys.argv[1].lower() == "--batch":
-        if len(sys.argv) != 4:
-            print("Usage: python main.py --batch <directory_path> <output_format>")
-            sys.exit(1)
+    if len(sys.argv) != 4:
+        print("Usage: python main.py --batch <directory_path> <output_format>")
+        sys.exit(1)
 
-        directory_path = sys.argv[2]
-        output_format = sys.argv[3].lower()
+    directory_path = sys.argv[2]
+    output_format = sys.argv[3].lower()
 
-        if not output_format.startswith('.'):
-            output_format = '.' + output_format
+    if not output_format.startswith('.'):
+        output_format = '.' + output_format
 
-        if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
-            print(f"Directory '{directory_path}' does not exist.")
-            sys.exit(1)
+    if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
+        print(f"Directory '{directory_path}' does not exist.")
+        sys.exit(1)
 
-        batch_process(directory_path, output_format)
+    batch_process(directory_path, output_format)
 
     else:
         print("Invalid command.")
