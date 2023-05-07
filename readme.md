@@ -1,4 +1,4 @@
-# Multi-Type File Parser (MFE-Parse)
+# Multi-Extension Converter (MEC)
 
 A Python-based console application to convert various file formats, such as HTML, images, and documents, into PDF, JPEG, JSON, CSV, or YAML files.
 

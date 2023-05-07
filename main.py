@@ -9,11 +9,6 @@ from pdf2image.pdf2image import convert_from_path
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
 import logging
-from urllib.parse import urlparse
-import requests
-from concurrent.futures import ThreadPoolExecutor
-from pdf2image.pdf2image import convert_from_path
-
 
 logging.basicConfig(filename='converter.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -87,7 +82,6 @@ def download_file(url, local_path):
         with open(local_path, 'wb') as f:
             for chunk in r.iter_content(chunk_size=8192):
                 f.write(chunk)
-
 
 def process_file(input_file, output_format):
     input_filename = os.path.splitext(input_file)[0]
