@@ -1,5 +1,6 @@
+pypandoc
 img2pdf
 pdf2image
-fitz
-pypandoc
+Pillow
 requests
+beautifulsoup4
