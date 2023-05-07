@@ -30,6 +30,18 @@ class Converter:
         else:
             pypandoc.convert_file(self.input_file, 'pdf', outputfile=output_file, extra_args=['--pdf-engine', 'pdflatex', '--quiet'])
 
+    def to_odt(self, output_file):
+        if self.input_extension in ['.txt', '.TXT', '.docx', '.DOCX']:
+            pypandoc.convert_file(self.input_file, 'odt', outputfile=output_file)
+        else:
+            raise ValueError("Conversion to ODT is not supported for this file type")
+
+    def to_docx(self, output_file):
+        if self.input_extension in ['.txt', '.TXT', '.odt', '.ODT']:
+            pypandoc.convert_file(self.input_file, 'docx', outputfile=output_file)
+        else:
+            raise ValueError("Conversion to DOCX is not supported for this file type")
+
     def to_json(self, output_file):
         if self.input_extension in ['.html', '.htm']:
             df = pd.read_html(self.input_file)[0]
@@ -99,6 +111,10 @@ def process_file(input_file, output_format):
             converter.to_csv(output_file)
         elif output_format == '.yaml':
             converter.to_yaml(output_file)
+        elif output_format == '.odt':
+            converter.to_odt(output_file)
+        elif output_format == '.docx':
+            converter.to_docx(output_file)
         else:
             print(f"Unsupported output format: {output_format}")
             sys.exit(1)

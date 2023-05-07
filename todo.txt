@@ -1,0 +1,1 @@
+executable compiler to auto open terminal and start interactive mode
