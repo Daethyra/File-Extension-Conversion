@@ -146,6 +146,7 @@ if __name__ == "__main__":
         print("Usage instructions:")
         print("  Interactive mode: python main.py")
         print("  Batch mode: python main.py --batch <directory_path> <output_format>")
+        
     if len(sys.argv) == 1:
         print("Interactive mode.")
         print("Enter 'quit' at any time to exit.")
@@ -204,22 +205,22 @@ if __name__ == "__main__":
             print(f"Error converting {input_file}: {str(e)}")
             logging.error(f"Error converting {input_file}: {str(e)}")
 
-    elif sys.argv[1].lower() == "--batch":
-    if len(sys.argv) != 4:
-        print("Usage: python main.py --batch <directory_path> <output_format>")
-        sys.exit(1)
+    elif len(sys.argv) > 1 and sys.argv[1].lower() == "--batch":
+        if len(sys.argv) != 4:
+            print("Usage: python main.py --batch <directory_path> <output_format>")
+            sys.exit(1)
 
-    directory_path = sys.argv[2]
-    output_format = sys.argv[3].lower()
+        directory_path = sys.argv[2]
+        output_format = sys.argv[3].lower()
 
-    if not output_format.startswith('.'):
-        output_format = '.' + output_format
+        if not output_format.startswith('.'):
+            output_format = '.' + output_format
 
-    if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
-        print(f"Directory '{directory_path}' does not exist.")
-        sys.exit(1)
+        if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
+            print(f"Directory '{directory_path}' does not exist.")
+            sys.exit(1)
 
-    batch_process(directory_path, output_format)
+        batch_process(directory_path, output_format)
 
     else:
         print("Invalid command.")
