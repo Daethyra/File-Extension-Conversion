@@ -1,38 +1,47 @@
-# Multi-Extension Converter (MEC)
+╔══════════════════════════════════════════════════════════════════════════════════╗
+║ ███████╗░█████╗░░█████╗░███╗░░░███╗░█████╗░                                    ║
+║ ██╔════╝██╔══██╗██╔══██╗████╗░████║██╔══██╗                                    ║
+║ █████╗░░███████║██║░░╚═╝██╔████╔██║██║░░██║    Multi-Extension Converter      ║
+║ ██╔══╝░░██╔══██║██║░░██╗██║╚██╔╝██║██║░░██║                                    ║
+║ ███████╗██║░░██║╚█████╔╝██║░╚═╝░██║╚█████╔╝                                    ║
+║ ╚══════╝╚═╝░░╚═╝░╚════╝░╚═╝░░░░░╚═╝░╚════╝░                                    ║
+╚════════════════════════════════════════════════════════════════════════════════╝
 
-A Python-based console application to convert various file formats, such as HTML, images, and documents, into PDF, JPEG, JSON, CSV, or YAML files.
+## Welcome to the Multi-Extension Converter (MEC) - a Python-based console application that converts various file formats, such as HTML, images, and documents, into PDF, JPEG, JSON, CSV, or YAML files.
 
-## Features
-
+# 1. FEATURES
 - Accepts local files and URLs as input.
 - Supports various file formats, including HTML, images (JPEG, PNG, BMP), and documents (DOCX, ODT, TXT, PDF).
 - Automatically detects the input file's format and handles it accordingly.
 - Improved error handling, providing informative error messages.
 - Flexible: supports additional document formats via Pandoc conversion.
 
-## Installation
+# 2. Installation
+To get started with MEC, you'll need to have Docker installed on your machine. Follow these steps to use the tool:
 
-1. Clone this repository or download the source code.
-2. Ensure that you have Python 3.10+ installed on your system.
-3. Install the required dependencies by running: ```pip install -r requirements.txt```
+### Step A: Pull the Docker image
+`docker pull daethyra/pypandoc:v1`
 
-## Usage 
-To use the script, first replace the {user} in `main.py` with your username, or otherwise point the program to the correct path.
+### Step B: Run the Docker container and mount your local working directory
+`docker run -it --rm -v "$(pwd):/app/documents" daethyra/pypandoc:v1`
 
-Then, navigate to the directory containing the source code and run the following command:
-```python main.py <input_file>```
+This command mounts your current working directory as a volume inside the container, allowing the program to access and convert your files.
 
-Replace <input_file> with the path to the file you want to convert, or the URL of the file.
+Once the container is running, you'll immediately enter the interactive mode. Follow the on-screen instructions to convert your files.
 
-The script will generate a converted file in the same directory as the input file, with the same name and an _output suffix.
+### 3. Usage
+Alternatively, to use the script itself, first navigate to the directory containing the source code, and run the following command:
+`python main.py`
 
-## Dependencies
-pypandoc - A Python wrapper for Pandoc, the universal document converter.
-img2pdf - A Python library to convert images to PDF without losing quality.
-pdf2image - A library that converts PDFs to images.
-Pillow - A powerful image processing library in Python.
-requests - A popular Python library for making HTTP requests.
-beautifulsoup4 - A library for pulling data out of HTML and XML files.
+And follow the CLI instructions.
 
-## License
-This project is licensed under the GNU Affero General Public License. See the LICENSE file for details.
+The script will create a "Conversions" folder if it does not already exist. Then it will export the converted file into the same folder with "_output.
+
+### 4. Requirements
+`pypandoc==1.11
+requests
+pandas
+img2pdf
+pdf2image`
+
+### 5. License

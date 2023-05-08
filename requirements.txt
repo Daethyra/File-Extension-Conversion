@@ -1,6 +1,5 @@
-pypandoc
+pypandoc==1.11
+requests
+pandas
 img2pdf
 pdf2image
-Pillow
-requests
-beautifulsoup4
