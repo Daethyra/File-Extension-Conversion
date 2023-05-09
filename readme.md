@@ -43,5 +43,3 @@ requests
 pandas
 img2pdf
 pdf2image`
-
-### 5. License
