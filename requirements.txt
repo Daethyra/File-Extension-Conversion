@@ -1,6 +1,1 @@
-pypandoc
-img2pdf
-pdf2image
-Pillow
-requests
-beautifulsoup4
+pillow

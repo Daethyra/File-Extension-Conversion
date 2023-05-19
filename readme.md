@@ -1,38 +1,45 @@
-# Multi-Extension Converter (MEC)
+# Simple Image Converter
 
-A Python-based console application to convert various file formats, such as HTML, images, and documents, into PDF, JPEG, JSON, CSV, or YAML files.
-
-## Features
-
-- Accepts local files and URLs as input.
-- Supports various file formats, including HTML, images (JPEG, PNG, BMP), and documents (DOCX, ODT, TXT, PDF).
-- Automatically detects the input file's format and handles it accordingly.
-- Improved error handling, providing informative error messages.
-- Flexible: supports additional document formats via Pandoc conversion.
+This project is a simple Python script to convert .png images to .jpg and vice versa. 
 
 ## Installation
+Follow the steps below to use this script:
 
-1. Clone this repository or download the source code.
-2. Ensure that you have Python 3.10+ installed on your system.
-3. Install the required dependencies by running: ```pip install -r requirements.txt```
+1. Clone the repository:
+    ```
+    git clone https://github.com/<yourusername>/simple-image-converter.git
+    ```
+2. Navigate to the project directory:
+    ```
+    cd simple-image-converter
+    ```
+3. (Optional) Set up a virtual environment:
+    ```
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+4. Install the required packages:
+    ```
+    pip install -r requirements.txt
+    ```
+5. Run the script:
+    ```
+    python main.py
+    ```
 
-## Usage 
-To use the script, first replace the {user} in `main.py` with your username, or otherwise point the program to the correct path.
+## Usage
+When you run `main.py`, you'll be presented with a menu of options for image conversion. Follow the prompts to convert your images. You can convert all .png images to .jpg (and vice versa) in the current working directory or a specified directory, or convert a specific image file.
 
-Then, navigate to the directory containing the source code and run the following command:
-```python main.py <input_file>```
+1. Convert all PNG images in the current working directory to JPG.
 
-Replace <input_file> with the path to the file you want to convert, or the URL of the file.
+2. Convert all JPG images in the current working directory to PNG.
 
-The script will generate a converted file in the same directory as the input file, with the same name and an _output suffix.
+3. Convert a specific PNG to JPG.
 
-## Dependencies
-pypandoc - A Python wrapper for Pandoc, the universal document converter.
-img2pdf - A Python library to convert images to PDF without losing quality.
-pdf2image - A library that converts PDFs to images.
-Pillow - A powerful image processing library in Python.
-requests - A popular Python library for making HTTP requests.
-beautifulsoup4 - A library for pulling data out of HTML and XML files.
+4. Convert a specific JPG to PNG.
 
-## License
-This project is licensed under the GNU Affero General Public License. See the LICENSE file for details.
+5. Convert all PNG images in a specified directory to JPG.
+
+6. Convert all JPG images in a specified directory to PNG.
+
+Input the number of your choice and hit enter. Happy transition!
