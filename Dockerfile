@@ -7,14 +7,14 @@ WORKDIR /app
 # Copy the requirements file into the container
 COPY requirements.txt .
 
-# Install the dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Install Pandoc
+# Apt-Get update / Install Pandoc
 RUN apt-get update && \
     apt-get install -y pandoc texlive texlive-latex-extra && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
 COPY . .
