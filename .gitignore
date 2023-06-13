@@ -1,3 +1,7 @@
 # .gitignore
 
 /venv/
+
+**.log*
+
+**__init__**
