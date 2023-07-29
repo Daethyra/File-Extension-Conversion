@@ -4,8 +4,9 @@ import yaml
 import pandas as pd
 from pdfminer.high_level import extract_text
 from docx import Document
-from utils.path_utils import get_extension
-from models.text_classifier import TextClassifier
+from ..utils.path_utils import get_extension
+from ..models.text_classifier import TextClassifier
+import logging
 
 class AsyncConverter:
     """
@@ -18,7 +19,7 @@ class AsyncConverter:
         self.input_extension = get_extension(input_file)
         self.classifier = TextClassifier(model_path)
 
-    async def extract_text(self):
+    def extract_text(self):
         """
         Extract text from the input file. Currently supports .pdf, .docx, .txt, .json, .csv, and .yaml files.
         For other file types, additional conditions can be added.
@@ -51,7 +52,7 @@ class AsyncConverter:
             logging.error(f"Error extracting text from {self.input_file}: {str(e)}")
             return None
         
-    async def save_to_csv(self, text, output_file='output.csv'):
+    def save_to_csv(self, text, output_file='output.csv'):
         """
         Save the processed and classified text to a CSV file.
         """

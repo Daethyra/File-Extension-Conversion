@@ -1,5 +1,5 @@
 import torch
-from models.model_loader import load_model
+from model_loader import load_model
 
 class TextClassifier:
     """
@@ -10,12 +10,14 @@ class TextClassifier:
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
 
-    def classify_text(self, text):
+    def classify_event(self, text):
         """
-        Classify the input text as '0' (not intending to commit harm out of feelings of bigotry)
-        or '1' (intending to commit harm out of feelings of bigotry).
+        Classify the input event as 'push' or 'other'.
         """
         inputs = self.tokenizer(text, return_tensors='pt').to(self.device)
         outputs = self.model(**inputs)
         _, predicted = torch.max(outputs.logits, 1)
-        return predicted.item()
+        if predicted.item() == 0:
+            return 'push'
+        else:
+            return 'other'
