@@ -1,8 +1,0 @@
-# .gitignore
-
-/venv/
-
-**.log*
-
-
-**__pycache__**
