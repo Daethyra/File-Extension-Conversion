@@ -22,4 +22,4 @@ python-dotenv = "^0.19.1"
 
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.5"
+pytest = "^7.2.0"
