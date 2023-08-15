@@ -1,3 +1,4 @@
+"This module has 1 class for image conversion, and may be executed individually or easily imported and integrated."
 from PIL import Image
 import os
 import sys
