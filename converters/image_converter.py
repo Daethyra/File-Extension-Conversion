@@ -2,6 +2,12 @@ import os
 from PIL import Image
 
 class ImageConverter:
+    SUPPORTED_CONVERSIONS = {
+        '.jpg': {'.jpg'},
+        '.png': {'.png'},
+        '.bmp': {'.jpg', '.png'}
+    }
+
     def __init__(self, input_path: str, output_path: str):
         """
         Initializes a new instance of the ImageConverter class.
@@ -18,14 +24,38 @@ class ImageConverter:
         Converts an image to the desired format.
 
         Raises:
-            ValueError: If the input file format is not supported.
+            ValueError: If the input file format is not supported or the conversion is not possible.
         """
-        try:
-            img = Image.open(self.input_path)
-            img.save(self.output_path)
-        except Exception as e:
-            logging.exception(f"Failed to convert image. Input: {self.input_path}, Output: {self.output_path}. Error: {str(e)}")
-            raise ValueError(f"Failed to convert image. Input: {self.input_path}, Output: {self.output_path}. Error: {str(e)}. Please check that the input file format is supported and that the output file path is valid.")
+        input_ext = os.path.splitext(self.input_path)[1].lower()
+        output_ext = os.path.splitext(self.output_path)[1].lower()
+
+        if input_ext not in self.SUPPORTED_CONVERSIONS:
+            raise ValueError(f"Unsupported input file format: {input_ext}. "
+                             f"Supported file formats and conversions: {self.supported_conversions()}")
+
+        if output_ext not in self.SUPPORTED_CONVERSIONS[input_ext]:
+            raise ValueError(f"Unsupported output file format: {output_ext}. "
+                             f"Supported file formats and conversions: {self.supported_conversions()}")
+
+        if input_ext == '.jpg' and output_ext == '.jpg':
+            if self.input_path != self.output_path:
+                os.replace(self.input_path, self.output_path)
+            else:
+                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
+        elif input_ext == '.png' and output_ext == '.png':
+            if self.input_path != self.output_path:
+                os.replace(self.input_path, self.output_path)
+            else:
+                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
+        elif input_ext == '.bmp' and (output_ext == '.jpg' or output_ext == '.png'):
+            self._bmp_to_image(output_ext)
+        else:
+            raise ValueError(f"Conversion failed. Input: {self.input_path}, Output: {self.output_path}. "
+                             f"{self.supported_conversions()}")
+
+    def _bmp_to_image(self, output_ext: str) -> None:
+        img = Image.open(self.input_path)
+        img.save(self.output_path, output_ext.upper())
 
     @staticmethod
     def supported_conversions() -> str:
@@ -36,8 +66,8 @@ class ImageConverter:
             str: A string with the supported file formats and conversions.
         """
         return "Supported file formats and conversions:\n" \
-               "JPEG: can be converted to PNG or JPEG (no conversion needed)\n" \
-               "PNG: can be converted to JPEG or PNG (no conversion needed)\n" \
+               "JPEG: can be converted to JPEG (no conversion needed)\n" \
+               "PNG: can be converted to PNG (no conversion needed)\n" \
                "BMP: can be converted to JPEG or PNG"
 
 
@@ -50,23 +80,7 @@ def convert_file(input_path: str, output_path: str) -> None:
         output_path (str): Path to save the converted image file.
 
     Raises:
-        ValueError: If the input file format is not supported.
+        ValueError: If the input file format is not supported or the conversion is not possible.
     """
-    input_ext = os.path.splitext(input_path)[1].lower()
-    output_ext = os.path.splitext(output_path)[1].lower()
-
-    if input_ext == '.jpg' and output_ext == '.jpg':
-        if input_path != output_path:
-            os.replace(input_path, output_path)
-        else:
-            raise ValueError(f"Input and output paths are the same: {input_path}. Please provide a different output path.")
-    elif input_ext == '.png' and output_ext == '.png':
-        if input_path != output_path:
-            os.replace(input_path, output_path)
-        else:
-            raise ValueError(f"Input and output paths are the same: {input_path}. Please provide a different output path.")
-    elif input_ext == '.bmp' and (output_ext == '.jpg' or output_ext == '.png'):
-        converter = ImageConverter(input_path, output_path)
-        converter.convert()
-    else:
-        raise ValueError(f"Unsupported file format or conversion. Input: {input_ext}, Output: {output_ext}. {ImageConverter.supported_conversions()}")
+    converter = ImageConverter(input_path, output_path)
+    converter.convert()
