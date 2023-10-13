@@ -98,7 +98,7 @@ class TextConverter:
                "XML: can be converted to JSON"
 
 
-def convert_file(input_path: str, output_path: str) -> None:
+def convert_text(input_path: str, output_path: str) -> None:
     """
     Converts a text document to the desired format.
 

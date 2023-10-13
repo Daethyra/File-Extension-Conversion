@@ -71,7 +71,7 @@ class ImageConverter:
                "BMP: can be converted to JPEG or PNG"
 
 
-def convert_file(input_path: str, output_path: str) -> None:
+def convert_image(input_path: str, output_path: str) -> None:
     """
     Converts an image to the desired format.
 
