@@ -1,8 +1,8 @@
 import os
 from typing import List
-from converters.image_converter import ImageConverter
-from converters.text_converter import TextConverter, convert_file
 from loguru import logger
+from converters.image_converter import ImageConverter
+from converters.text_converter import TextConverter
 
 
 def setup_logging() -> None:
@@ -19,28 +19,30 @@ def print_menu() -> None:
     """
     Prints the main menu for the file converter program.
     """
-    print("╔══════════════════════════════════════════════════════════╗")
-    print("║                    File Converter                         ║")
-    print("╠══════════════════════════════════════════════════════════╣")
-    print("║ 1. Convert PNG to JPG.                                    ║")
-    print("║ 2. Convert JPG to PNG.                                    ║")
-    print("║ 3. Convert JSON to CSV.                                   ║")
-    print("║ 4. Convert CSV to JSON.                                   ║")
-    print("║ 5. Convert ODT to plain text.                             ║")
-    print("║ 6. Convert XML to JSON.                                   ║")
-    print("║                                                            ║")
-    print("║ Enter 'q' to quit.                                        ║")
-    print("║ Note: You can enter either a specific file or a directory  ║")
-    print("║ path when prompted.                                       ║")
-    print("║                                                            ║")
-    print("║ Hint:                                                     ║")
-    print("║ - To convert a single file, enter the full path to the     ║")
-    print("║   file including the file name and extension.             ║")
-    print("║ - To convert all files in a directory, enter the full path ║")
-    print("║   to the directory.                                       ║")
-    print("║ - Converted files will be saved in the same directory as  ║")
-    print("║   the original file with a new extension.                 ║")
-    print("╚══════════════════════════════════════════════════════════╝")
+    print("""
+╔══════════════════════════════════════════════════════════╗
+║                    File Converter                         ║
+╠══════════════════════════════════════════════════════════╣
+║ 1. Convert PNG to JPG.                                    ║
+║ 2. Convert JPG to PNG.                                    ║
+║ 3. Convert JSON to CSV.                                   ║
+║ 4. Convert CSV to JSON.                                   ║
+║ 5. Convert ODT to plain text.                             ║
+║ 6. Convert XML to JSON.                                   ║
+║                                                            ║
+║ Enter 'q' to quit.                                        ║
+║ Note: You can enter either a specific file or a directory  ║
+║ path when prompted.                                       ║
+║                                                            ║
+║ Hint:                                                     ║
+║ - To convert a single file, enter the full path to the     ║
+║   file including the file name and extension.             ║
+║ - To convert all files in a directory, enter the full path ║
+║   to the directory.                                       ║
+║ - Converted files will be saved in the same directory as  ║
+║   the original file with a new extension.                 ║
+╚══════════════════════════════════════════════════════════╝
+    """)
 
 
 def convert_files(paths: List[str], conversion_type: str) -> None:
@@ -143,7 +145,7 @@ def main() -> None:
                     choice = "q"
                     break
 
-        except Exception as e:
+        except ValueError as e:
             logger.error(f"An error occurred: {str(e)}")
             print(f"An error occurred: {str(e)}")
 
