@@ -1,10 +1,17 @@
 import os
 import json
 import csv
-import odf.opendocument
 import xml.etree.ElementTree as ET
+from odf import opendocument
 
 class TextConverter:
+    SUPPORTED_CONVERSIONS = {
+        '.json': {'.csv', '.json'},
+        '.csv': {'.json', '.csv'},
+        '.odt': {'.txt'},
+        '.xml': {'.json'}
+    }
+
     def __init__(self, input_path: str, output_path: str):
         """
         Initializes a new instance of the TextConverter class.
@@ -26,6 +33,14 @@ class TextConverter:
         input_ext = os.path.splitext(self.input_path)[1].lower()
         output_ext = os.path.splitext(self.output_path)[1].lower()
 
+        if input_ext not in self.SUPPORTED_CONVERSIONS:
+            raise ValueError(f"Unsupported input file format: {input_ext}. "
+                             f"Supported file formats and conversions: {self.supported_conversions()}")
+
+        if output_ext not in self.SUPPORTED_CONVERSIONS[input_ext]:
+            raise ValueError(f"Unsupported output file format: {output_ext}. "
+                             f"Supported file formats and conversions: {self.supported_conversions()}")
+
         if input_ext == '.json' and output_ext == '.csv':
             with open(self.input_path, 'r') as f:
                 data = json.load(f)
@@ -41,7 +56,7 @@ class TextConverter:
             with open(self.output_path, 'w') as f:
                 json.dump(data, f, indent=4)
         elif input_ext == '.odt' and output_ext == '.txt':
-            doc = odf.opendocument.load(self.input_path)
+            doc = opendocument.load(self.input_path)
             with open(self.output_path, 'w') as f:
                 f.write(doc.text().replace('\n', ' '))
         elif input_ext == '.xml' and output_ext == '.json':
@@ -52,9 +67,6 @@ class TextConverter:
                 data.append(child.attrib)
             with open(self.output_path, 'w') as f:
                 json.dump(data, f, indent=4)
-        else:
-            raise ValueError(f"Unsupported file format or conversion. Input: {input_ext}, Output: {output_ext}. "
-                             f"{self.supported_conversions()}")
 
         if not os.path.exists(self.output_path):
             raise ValueError(f"Conversion failed. Input: {self.input_path}, Output: {self.output_path}. "
