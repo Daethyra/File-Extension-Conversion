@@ -1,8 +1,8 @@
 import os
 from typing import List
 from loguru import logger
-from converters.image_converter import ImageConverter
-from converters.text_converter import TextConverter
+from converters.image_converter import convert_image
+from converters.text_converter import convert_text
 
 
 def setup_logging() -> None:
@@ -19,7 +19,7 @@ def print_menu() -> None:
     """
     Prints the main menu for the file converter program.
     """
-    print("""
+    print("""\
 ╔══════════════════════════════════════════════════════════╗
 ║                    File Converter                         ║
 ╠══════════════════════════════════════════════════════════╣
@@ -53,45 +53,54 @@ def convert_files(paths: List[str], conversion_type: str) -> None:
         paths: A list of file paths to convert.
         conversion_type: The type of conversion to perform.
     """
-    if conversion_type == "png_to_jpg":
-        new_extension = ".jpg"
-        converter_class = ImageConverter
-    elif conversion_type == "jpg_to_png":
-        new_extension = ".png"
-        converter_class = ImageConverter
-    elif conversion_type == "json_to_csv":
-        new_extension = ".csv"
-        converter_class = TextConverter
-    elif conversion_type == "csv_to_json":
-        new_extension = ".json"
-        converter_class = TextConverter
-    elif conversion_type == "odt_to_txt":
-        new_extension = ".txt"
-        converter_class = TextConverter
-    elif conversion_type == "xml_to_json":
-        new_extension = ".json"
-        converter_class = TextConverter
-    else:
-        raise ValueError("Invalid conversion type!")
-
     for path in paths:
         if os.path.isfile(path):
-            new_filename = os.path.splitext(path)[0] + new_extension
-            converter = converter_class(path, new_filename)
-            converter.convert()
+            new_filename = os.path.splitext(path)[0] + convert_extension(conversion_type)
+            if conversion_type in ["png_to_jpg", "jpg_to_png"]:
+                convert_image(path, new_filename, conversion_type)
+            else:
+                convert_text(path, new_filename)
             logger.info(f"Converted {path} to {new_filename}.")
             print(f"Conversion of {path} to {new_filename} successful.")
         elif os.path.isdir(path):
             for file in os.listdir(path):
-                if file.lower().endswith(new_extension):
+                if file.lower().endswith(convert_extension(conversion_type)):
                     input_path = os.path.join(path, file)
-                    output_path = os.path.join(path, os.path.splitext(file)[0] + new_extension)
-                    converter = converter_class(input_path, output_path)
-                    converter.convert()
+                    output_path = os.path.join(path, os.path.splitext(file)[0] + convert_extension(conversion_type))
+                    if conversion_type in ["png_to_jpg", "jpg_to_png"]:
+                        convert_image(input_path, output_path, conversion_type)
+                    else:
+                        convert_text(input_path, output_path)
             logger.info(f"{conversion_type.upper()} conversion in the specified directory is complete.")
             print(f"{conversion_type.upper()} conversion in the specified directory is complete.")
         else:
             print(f"{path} is not a valid file or directory.")
+
+
+def convert_extension(conversion_type: str) -> str:
+    """
+    Returns the file extension for the specified conversion type.
+
+    Args:
+        conversion_type: The type of conversion.
+
+    Returns:
+        str: The file extension for the specified conversion type.
+    """
+    if conversion_type == "png_to_jpg":
+        return ".jpg"
+    elif conversion_type == "jpg_to_png":
+        return ".png"
+    elif conversion_type == "json_to_csv":
+        return ".csv"
+    elif conversion_type == "csv_to_json":
+        return ".json"
+    elif conversion_type == "odt_to_txt":
+        return ".txt"
+    elif conversion_type == "xml_to_json":
+        return ".json"
+    else:
+        raise ValueError("Invalid conversion type!")
 
 
 def main() -> None:
