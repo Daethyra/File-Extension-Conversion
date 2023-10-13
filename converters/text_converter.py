@@ -42,35 +42,46 @@ class TextConverter:
                              f"Supported file formats and conversions: {self.supported_conversions()}")
 
         if input_ext == '.json' and output_ext == '.csv':
-            with open(self.input_path, 'r') as f:
-                data = json.load(f)
-            with open(self.output_path, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(data[0].keys())
-                for row in data:
-                    writer.writerow(row.values())
+            self._json_to_csv()
         elif input_ext == '.csv' and output_ext == '.json':
-            with open(self.input_path, 'r') as f:
-                reader = csv.DictReader(f)
-                data = [row for row in reader]
-            with open(self.output_path, 'w') as f:
-                json.dump(data, f, indent=4)
+            self._csv_to_json()
         elif input_ext == '.odt' and output_ext == '.txt':
-            doc = opendocument.load(self.input_path)
-            with open(self.output_path, 'w') as f:
-                f.write(doc.text().replace('\n', ' '))
+            self._odt_to_txt()
         elif input_ext == '.xml' and output_ext == '.json':
-            tree = ET.parse(self.input_path)
-            root = tree.getroot()
-            data = []
-            for child in root:
-                data.append(child.attrib)
-            with open(self.output_path, 'w') as f:
-                json.dump(data, f, indent=4)
-
-        if not os.path.exists(self.output_path):
+            self._xml_to_json()
+        else:
             raise ValueError(f"Conversion failed. Input: {self.input_path}, Output: {self.output_path}. "
                              f"{self.supported_conversions()}")
+
+    def _json_to_csv(self) -> None:
+        with open(self.input_path, 'r') as f:
+            data = json.load(f)
+        with open(self.output_path, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(data[0].keys())
+            for row in data:
+                writer.writerow(row.values())
+
+    def _csv_to_json(self) -> None:
+        with open(self.input_path, 'r') as f:
+            reader = csv.DictReader(f)
+            data = [row for row in reader]
+        with open(self.output_path, 'w') as f:
+            json.dump(data, f, indent=4)
+
+    def _odt_to_txt(self) -> None:
+        doc = opendocument.load(self.input_path)
+        with open(self.output_path, 'w') as f:
+            f.write(doc.text().replace('\n', ' '))
+
+    def _xml_to_json(self) -> None:
+        tree = ET.parse(self.input_path)
+        root = tree.getroot()
+        data = []
+        for child in root:
+            data.append(child.attrib)
+        with open(self.output_path, 'w') as f:
+            json.dump(data, f, indent=4)
 
     @staticmethod
     def supported_conversions() -> str:
@@ -98,15 +109,5 @@ def convert_file(input_path: str, output_path: str) -> None:
     Raises:
         ValueError: If the input file format is not supported or the conversion is not possible.
     """
-    input_ext = os.path.splitext(input_path)[1].lower()
-    output_ext = os.path.splitext(output_path)[1].lower()
-
-    if input_ext == '.csv' and output_ext == '.csv':
-        if input_path != output_path:
-            os.replace(input_path, output_path)
-    elif input_ext == '.json' and output_ext == '.json':
-        if input_path != output_path:
-            os.replace(input_path, output_path)
-    else:
-        converter = TextConverter(input_path, output_path)
-        converter.convert()
+    converter = TextConverter(input_path, output_path)
+    converter.convert()
