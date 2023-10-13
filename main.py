@@ -1,8 +1,8 @@
 import os
 from typing import List
 from loguru import logger
-from converters.image_converter import convert_image
-from converters.text_converter import convert_text
+from src.image_converter import convert_image
+from src.text_converter import convert_text
 
 
 def setup_logging() -> None:
