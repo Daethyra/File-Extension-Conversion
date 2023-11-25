@@ -1,2 +1,4 @@
-pillow
+loguru
+pytest
+Pillow
 odfpy
