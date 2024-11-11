@@ -23,24 +23,20 @@ def print_menu() -> None:
 ╔══════════════════════════════════════════════════════════╗
 ║                    File Converter                         ║
 ╠══════════════════════════════════════════════════════════╣
-║ 1. Convert PNG to JPG.                                    ║
-║ 2. Convert JPG to PNG.                                    ║
-║ 3. Convert JSON to CSV.                                   ║
-║ 4. Convert CSV to JSON.                                   ║
-║ 5. Convert ODT to plain text.                             ║
-║ 6. Convert XML to JSON.                                   ║
-║                                                            ║
-║ Enter 'q' to quit.                                        ║
-║ Note: You can enter either a specific file or a directory  ║
-║ path when prompted.                                       ║
-║                                                            ║
-║ Hint:                                                     ║
-║ - To convert a single file, enter the full path to the     ║
-║   file including the file name and extension.             ║
-║ - To convert all files in a directory, enter the full path ║
-║   to the directory.                                       ║
-║ - Converted files will be saved in the same directory as  ║
-║   the original file with a new extension.                 ║
+║ 1. Convert PNG to JPG                                    ║
+║ 2. Convert JPG to PNG                                    ║
+║ 3. Convert JSON to CSV                                   ║
+║ 4. Convert CSV to JSON                                   ║
+║ 5. Convert ODT to plain text                            ║
+║ 6. Convert XML to JSON                                   ║
+║ 7. Convert PNG to WebP                                   ║
+║ 8. Convert JPG to WebP                                   ║
+║ 9. Convert WebP to PNG                                   ║
+║ 10. Convert WebP to JPG                                  ║
+║                                                          ║
+║ Enter 'q' to quit.                                       ║
+║ Note: You can enter either a specific file or a directory║
+║ path when prompted.                                      ║
 ╚══════════════════════════════════════════════════════════╝
     """)
 
