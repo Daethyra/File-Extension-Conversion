@@ -174,6 +174,14 @@ def main() -> None:
                 conversion_type = "odt_to_txt"
             elif choice == "6":
                 conversion_type = "xml_to_json"
+            elif choice == "7":
+                conversion_type = "png_to_webp"
+            elif choice == "8":
+                conversion_type = "jpg_to_webp"
+            elif choice == "9":
+                conversion_type = "webp_to_png"
+            elif choice == "10":
+                conversion_type = "webp_to_jpg"
             else:
                 print("Invalid choice!")
                 continue
