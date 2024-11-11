@@ -52,21 +52,38 @@ def convert_files(paths: List[str], conversion_type: str) -> None:
     for path in paths:
         if os.path.isfile(path):
             new_filename = os.path.splitext(path)[0] + convert_extension(conversion_type)
-            if conversion_type in ["png_to_jpg", "jpg_to_png"]:
+            if any(conv in conversion_type for conv in ['png', 'jpg', 'webp']):
                 convert_image(path, new_filename, conversion_type)
             else:
                 convert_text(path, new_filename)
             logger.info(f"Converted {path} to {new_filename}.")
             print(f"Conversion of {path} to {new_filename} successful.")
         elif os.path.isdir(path):
-            for file in os.listdir(path):
-                if file.lower().endswith(convert_extension(conversion_type)):
-                    input_path = os.path.join(path, file)
-                    output_path = os.path.join(path, os.path.splitext(file)[0] + convert_extension(conversion_type))
-                    if conversion_type in ["png_to_jpg", "jpg_to_png"]:
+            input_ext = get_input_extension(conversion_type)
+            # Filter files by input extension before processing
+            files_to_convert = [
+                file for file in os.listdir(path) 
+                if file.lower().endswith(input_ext.lower())
+            ]
+            
+            if not files_to_convert:
+                print(f"No {input_ext} files found in directory {path}")
+                continue
+                
+            for file in files_to_convert:
+                input_path = os.path.join(path, file)
+                output_path = os.path.join(path, os.path.splitext(file)[0] + convert_extension(conversion_type))
+                try:
+                    if any(conv in conversion_type for conv in ['png', 'jpg', 'webp']):
                         convert_image(input_path, output_path, conversion_type)
                     else:
                         convert_text(input_path, output_path)
+                    logger.info(f"Converted {input_path} to {output_path}.")
+                    print(f"Conversion of {input_path} to {output_path} successful.")
+                except Exception as e:
+                    logger.error(f"Error converting {input_path}: {str(e)}")
+                    print(f"Error converting {input_path}: {str(e)}")
+                    continue
             logger.info(f"{conversion_type.upper()} conversion in the specified directory is complete.")
             print(f"{conversion_type.upper()} conversion in the specified directory is complete.")
         else:
