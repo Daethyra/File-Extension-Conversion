@@ -3,9 +3,14 @@ from PIL import Image
 
 class ImageConverter:
     SUPPORTED_CONVERSIONS = {
-        '.jpg': {'.jpg'},
-        '.png': {'.png'},
-        '.bmp': {'.jpg', '.png'}
+        'png_to_jpg': ('.png', '.jpg'),
+        'jpg_to_png': ('.jpg', '.png'),
+        'bmp_to_jpg': ('.bmp', '.jpg'),
+        'bmp_to_png': ('.bmp', '.png'),
+        'webp_to_jpg': ('.webp', '.jpg'),
+        'webp_to_png': ('.webp', '.png'),
+        'jpg_to_webp': ('.jpg', '.webp'),
+        'png_to_webp': ('.png', '.webp')
     }
 
     def __init__(self, input_path: str, output_path: str):
@@ -66,9 +71,10 @@ class ImageConverter:
             str: A string with the supported file formats and conversions.
         """
         return "Supported file formats and conversions:\n" \
-               "JPEG: can be converted to JPEG (no conversion needed)\n" \
-               "PNG: can be converted to PNG (no conversion needed)\n" \
-               "BMP: can be converted to JPEG or PNG"
+               "JPEG: can be converted to PNG, WebP\n" \
+               "PNG: can be converted to JPEG, WebP\n" \
+               "BMP: can be converted to JPEG, PNG\n" \
+               "WebP: can be converted to JPEG, PNG"
 
 
 def convert_image(input_path: str, output_path: str) -> None:
