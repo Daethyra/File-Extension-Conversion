@@ -33,6 +33,10 @@ class ImageConverter:
         Raises:
             ValueError: If the input file format is not supported or the conversion is not possible.
         """
+        if self.conversion_type not in self.SUPPORTED_CONVERSIONS:
+            raise ValueError(f"Unsupported conversion type: {self.conversion_type}")
+
+        expected_input_ext, expected_output_ext = self.SUPPORTED_CONVERSIONS[self.conversion_type]
         input_ext = os.path.splitext(self.input_path)[1].lower()
         output_ext = os.path.splitext(self.output_path)[1].lower()
 
@@ -40,29 +44,30 @@ class ImageConverter:
             raise ValueError(f"Unsupported input file format: {input_ext}. "
                              f"Supported file formats and conversions: {self.supported_conversions()}")
 
-        if output_ext not in self.SUPPORTED_CONVERSIONS[input_ext]:
-            raise ValueError(f"Unsupported output file format: {output_ext}. "
-                             f"Supported file formats and conversions: {self.supported_conversions()}")
+        if output_ext != expected_output_ext:
+            raise ValueError(f"Invalid output format for {self.conversion_type}: expected {expected_output_ext}, got {output_ext}")
 
-        if input_ext == '.jpg' and output_ext == '.jpg':
-            if self.input_path != self.output_path:
-                os.replace(self.input_path, self.output_path)
+        try:
+            img = Image.open(self.input_path)
+            
+            # Handle alpha channel for PNG/WebP to JPG conversion
+            if output_ext == '.jpg':
+                if img.mode in ('RGBA', 'LA'):
+                    background = Image.new('RGB', img.size, (255, 255, 255))
+                    background.paste(img, mask=img.getchannel('A'))
+                    img = background
+                elif img.mode != 'RGB':
+                    img = img.convert('RGB')
+            
+            # Handle WebP specific options
+            if output_ext == '.webp':
+                img.save(self.output_path, 'WEBP', quality=90, method=6, lossless=False)
             else:
-                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
-        elif input_ext == '.png' and output_ext == '.png':
-            if self.input_path != self.output_path:
-                os.replace(self.input_path, self.output_path)
-            else:
-                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
-        elif input_ext == '.bmp' and (output_ext == '.jpg' or output_ext == '.png'):
-            self._bmp_to_image(output_ext)
-        else:
-            raise ValueError(f"Conversion failed. Input: {self.input_path}, Output: {self.output_path}. "
-                             f"{self.supported_conversions()}")
-
-    def _bmp_to_image(self, output_ext: str) -> None:
-        img = Image.open(self.input_path)
-        img.save(self.output_path, output_ext.upper())
+                # For other formats, use standard save with format inference
+                img.save(self.output_path)
+            
+        except Exception as e:
+            raise ValueError(f"Error converting image: {str(e)}")
 
     @staticmethod
     def supported_conversions() -> str:
