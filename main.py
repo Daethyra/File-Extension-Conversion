@@ -90,6 +90,31 @@ def convert_files(paths: List[str], conversion_type: str) -> None:
             print(f"{path} is not a valid file or directory.")
 
 
+def get_input_extension(conversion_type: str) -> str:
+    """
+    Returns the input file extension for the specified conversion type.
+
+    Args:
+        conversion_type: The type of conversion.
+
+    Returns:
+        str: The input file extension for the specified conversion type.
+    """
+    extensions = {
+        'png_to_jpg': '.png',
+        'jpg_to_png': '.jpg',
+        'json_to_csv': '.json',
+        'csv_to_json': '.csv',
+        'odt_to_txt': '.odt',
+        'xml_to_json': '.xml',
+        'png_to_webp': '.png',
+        'jpg_to_webp': '.jpg',
+        'webp_to_png': '.webp',
+        'webp_to_jpg': '.webp'
+    }
+    return extensions.get(conversion_type, '')
+
+
 def convert_extension(conversion_type: str) -> str:
     """
     Returns the file extension for the specified conversion type.
