@@ -13,16 +13,18 @@ class ImageConverter:
         'png_to_webp': ('.png', '.webp')
     }
 
-    def __init__(self, input_path: str, output_path: str):
+    def __init__(self, input_path: str, output_path: str, conversion_type: str):
         """
         Initializes a new instance of the ImageConverter class.
 
         Args:
             input_path (str): Path to the input image file.
             output_path (str): Path to save the converted image file.
+            conversion_type (str): Type of conversion to perform (e.g., 'png_to_jpg', 'jpg_to_png')
         """
         self.input_path = input_path
         self.output_path = output_path
+        self.conversion_type = conversion_type
 
     def convert(self) -> None:
         """
