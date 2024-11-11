@@ -117,28 +117,31 @@ def get_input_extension(conversion_type: str) -> str:
 
 def convert_extension(conversion_type: str) -> str:
     """
-    Returns the file extension for the specified conversion type.
+    Returns the output file extension for the specified conversion type.
 
     Args:
         conversion_type: The type of conversion.
 
     Returns:
-        str: The file extension for the specified conversion type.
+        str: The output file extension for the specified conversion type.
     """
-    if conversion_type == "png_to_jpg":
-        return ".jpg"
-    elif conversion_type == "jpg_to_png":
-        return ".png"
-    elif conversion_type == "json_to_csv":
-        return ".csv"
-    elif conversion_type == "csv_to_json":
-        return ".json"
-    elif conversion_type == "odt_to_txt":
-        return ".txt"
-    elif conversion_type == "xml_to_json":
-        return ".json"
-    else:
+    extensions = {
+        'png_to_jpg': '.jpg',
+        'jpg_to_png': '.png',
+        'json_to_csv': '.csv',
+        'csv_to_json': '.json',
+        'odt_to_txt': '.txt',
+        'xml_to_json': '.json',
+        'png_to_webp': '.webp',
+        'jpg_to_webp': '.webp',
+        'webp_to_png': '.png',
+        'webp_to_jpg': '.jpg'
+    }
+    
+    if conversion_type not in extensions:
         raise ValueError("Invalid conversion type!")
+    
+    return extensions[conversion_type]
 
 
 def main() -> None:
