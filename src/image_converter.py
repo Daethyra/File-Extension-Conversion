@@ -50,7 +50,7 @@ class ImageConverter:
         Converts the input image to the specified output format using Pillow.
         """
         img = Image.open(self.input_path)
-        img.save(self.output_path, output_ext.upper())
+        img.save(self.output_path)
 
     def _move_or_error(self) -> None:
         """
