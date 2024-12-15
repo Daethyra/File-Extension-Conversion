@@ -13,16 +13,18 @@ class ImageConverter:
         '.webp': {'.jpg', '.png', '.bmp', '.webp'}
     }
 
-    def __init__(self, input_path: str, output_path: str):
+    def __init__(self, input_path: str, output_path: str, output_format: str):
         """
         Initializes a new instance of the ImageConverter class.
 
         Args:
             input_path (str): Path to the input image file.
             output_path (str): Path to save the converted image file.
+            output_format (str): Desired output format (e.g., 'png', 'jpg', 'bmp', 'webp').
         """
         self.input_path = input_path
         self.output_path = output_path
+        self.output_format = output_format.lower()
 
     def convert(self) -> None:
         """
@@ -41,7 +43,10 @@ class ImageConverter:
             raise ValueError(f"Unsupported conversion: {input_ext} to {output_ext}. {self.supported_conversions()}")
 
         if input_ext == output_ext:
-            self._move_or_error()
+            # If the input and output formats are the same, move the file instead of re-saving it
+            ## self._move_or_error()
+            print(f"Skipping conversion for {self.input_path} (already in {self.output_format} format)")
+            return
         else:
             self._convert_image(input_ext, output_ext)
 
@@ -83,6 +88,7 @@ def convert_image(input_path: str, output_path: str, output_format: str) -> None
     Args:
         input_path (str): Path to the input image file.
         output_path (str): Path to save the converted image file.
+        output_format (str): Desired output format (e.g., 'png', 'jpg', 'bmp', 'webp').
 
     Raises:
         ValueError: If the input file format is not supported or the conversion is not possible.

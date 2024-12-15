@@ -33,21 +33,20 @@ def process_images(input_path: str, output_path: str, output_format: str) -> Lis
         output_filename = f"{os.path.splitext(os.path.basename(input_path))[0]}.{output_format}"
         output_file_path = os.path.join(output_path, output_filename)
         convert_image(input_path, output_file_path, output_format)
-        converted_images.append(output_file_path)
+        if os.path.exists(output_file_path):
+            converted_images.append(output_file_path)
     elif os.path.isdir(input_path):
         # Directory processing
         os.makedirs(output_path, exist_ok=True)
         image_files = collect_images(input_path)
-        
-        if image_files:  # Only create output directory if we have images to convert
-            os.makedirs(output_path, exist_ok=True)
 
         for file_path in image_files:
             output_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.{output_format}"
             output_file_path = os.path.join(output_path, output_filename)
             try:
                 convert_image(file_path, output_file_path, output_format)
-                converted_images.append(output_file_path)
+                if os.path.exists(output_file_path):
+                    converted_images.append(output_file_path)
             except ValueError as e:
                 print(f"Error converting {file_path}: {str(e)}")
 
