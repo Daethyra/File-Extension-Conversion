@@ -23,37 +23,37 @@ class TestImageConverter(unittest.TestCase):
         shutil.rmtree(self.test_dir)
 
     def test_convert_jpg_to_png(self):
-        converter = ImageConverter(self.input_jpg, self.output_png)
+        converter = ImageConverter(self.input_jpg, self.output_png, 'png')
         converter.convert()
         self.assertTrue(os.path.exists(self.output_png))
         self.assertEqual(Image.open(self.output_png).format, 'PNG')
 
     def test_convert_jpg_to_jpg(self):
-        converter = ImageConverter(self.input_jpg, self.output_jpg)
+        converter = ImageConverter(self.input_jpg, self.output_jpg, 'jpg')
         converter.convert()
-        self.assertTrue(os.path.exists(self.output_jpg))
-        self.assertNotEqual(self.input_jpg, self.output_jpg)
+        self.assertFalse(os.path.exists(self.output_jpg))  # Should not create a new file
 
     def test_unsupported_input_format(self):
         invalid_input = os.path.join(self.test_dir, 'test.txt')
         open(invalid_input, 'w').close()
         with self.assertRaises(ValueError):
-            converter = ImageConverter(invalid_input, self.output_png)
+            converter = ImageConverter(invalid_input, self.output_png, 'png')
             converter.convert()
 
     def test_unsupported_conversion(self):
         invalid_output = os.path.join(self.test_dir, 'test.gif')
         with self.assertRaises(ValueError):
-            converter = ImageConverter(self.input_jpg, invalid_output)
+            converter = ImageConverter(self.input_jpg, invalid_output, 'gif')
             converter.convert()
 
-    def test_same_input_output_path(self):
-        with self.assertRaises(ValueError):
-            converter = ImageConverter(self.input_jpg, self.input_jpg)
-            converter.convert()
+    def test_same_input_output_format(self):
+        output_jpg = os.path.join(self.test_dir, 'test_same.jpg')
+        converter = ImageConverter(self.input_jpg, output_jpg, 'jpg')
+        converter.convert()
+        self.assertFalse(os.path.exists(output_jpg))  # Should not create a new file
 
     def test_convert_image_function(self):
-        convert_image(self.input_jpg, self.output_png)
+        convert_image(self.input_jpg, self.output_png, 'png')
         self.assertTrue(os.path.exists(self.output_png))
         self.assertEqual(Image.open(self.output_png).format, 'PNG')
 
