@@ -1,7 +1,7 @@
 # Formaverter
 
 ## Description
-Formaverter is a Python tool that allows you to convert images between different formats using the Pillow library. It supports conversions between JPG, PNG, BMP, and WebP formats.
+Formaverter (Format Converter) is a Python tool that allows you to convert images between different formats using the Pillow library. It supports conversions between JPG, PNG, BMP, and WebP formats.
 
 ## Features
 - Convert images between JPG, PNG, BMP, and WebP formats
