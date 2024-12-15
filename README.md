@@ -10,22 +10,28 @@ Formaverter (Format Converter) is a Python tool that allows you to convert image
 - Skips conversion if the input and output formats are the same
 
 ## Installation
+
+<s>
 To install Formaverter, you need Python 3.13 or later. You can install it using pip:
 
 `pip install formaverter`
+</s>
+
+Apologies, I'm having trouble publishing the package. 
+
+For now, disregard instructions in this README that call for Formaverter's installation via Pip or other tools. ***Formaverter is not currently available on PyPI.*** \
+The easiest way to use it is by cloning this repository, installing Pillow to a virtual environment, and running the `main.py` file directly.
 
 ## Usage
 
-### Using main.py directly as a CLI tool (Recommended)
+### Using `main.py` directly as a CLI tool (Recommended)
 
 If you've cloned the repository or downloaded the source code, you can use the `main.py` file directly:
 
 1. Navigate to the directory containing `main.py`
 2. Run the following command:
 
-   `python main.py <input_path> <output_path> <output_format>`
-
-   The arguments are the same as described above.
+`python main.py <input_path> <output_path> <output_format>`
 
 Example:
 
