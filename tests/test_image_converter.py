@@ -1,85 +1,80 @@
-import pytest
+import sys
 import os
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
+
+import unittest
+import tempfile
+import shutil
 from PIL import Image
-from ..src.image_converter import ImageConverter, convert_image
+from formaverter.image_converter import ImageConverter, convert_image
 
-# Test data setup
-@pytest.fixture
-def setup_images(tmp_path):
-    """
-    Setup fixture to create dummy images in different formats.
-    """
-    bmp_path = tmp_path / "test.bmp"
-    jpg_path = tmp_path / "test.jpg"
-    png_path = tmp_path / "test.png"
 
-    # Create a simple image in BMP, JPG, PNG formats
-    img = Image.new("RGB", (100, 100), color="red")
-    img.save(bmp_path, "BMP")
-    img.save(jpg_path, "JPEG")
-    img.save(png_path, "PNG")
+class TestImageConverter(unittest.TestCase):
 
-    return bmp_path, jpg_path, png_path
+    def setUp(self):
+        self.test_dir = tempfile.mkdtemp()
+        self.input_jpg = os.path.join(self.test_dir, "test.jpg")
+        self.output_png = os.path.join(self.test_dir, "test.png")
+        self.output_jpg = os.path.join(self.test_dir, "test_output.jpg")
 
-# Test Cases for Successful Conversions
-def test_convert_bmp_to_jpg(setup_images, tmp_path):
-    bmp_path, _, _ = setup_images
-    output_path = tmp_path / "output.jpg"
-    convert_image(str(bmp_path), str(output_path))
-    assert os.path.exists(output_path)
+        # Create a test JPEG image
+        with Image.new("RGB", (100, 100), color="red") as img:
+            img.save(self.input_jpg)
 
-def test_convert_bmp_to_png(setup_images, tmp_path):
-    bmp_path, _, _ = setup_images
-    output_path = tmp_path / "output.png"
-    convert_image(str(bmp_path), str(output_path))
-    assert os.path.exists(output_path)
+    def tearDown(self):
+        shutil.rmtree(self.test_dir)
 
-def test_copy_jpg(setup_images, tmp_path):
-    _, jpg_path, _ = setup_images
-    output_path = tmp_path / "copy.jpg"
-    convert_image(str(jpg_path), str(output_path))
-    assert os.path.exists(output_path)
+    def test_convert_jpg_to_png(self):
+        converter = ImageConverter(self.input_jpg, self.output_png, "png")
+        converter.convert()
+        self.assertTrue(os.path.exists(self.output_png))
+        with Image.open(self.output_png) as img:
+            self.assertEqual(img.format, "PNG")
 
-def test_copy_png(setup_images, tmp_path):
-    _, _, png_path = setup_images
-    output_path = tmp_path / "copy.png"
-    convert_image(str(png_path), str(output_path))
-    assert os.path.exists(output_path)
+    def test_convert_jpg_to_jpg(self):
+        converter = ImageConverter(self.input_jpg, self.output_jpg, "jpg")
+        converter.convert()
+        self.assertFalse(
+            os.path.exists(self.output_jpg)
+        )  # Should not create a new file
 
-# Test Cases for Failure Cases
-def test_unsupported_input_format(setup_images, tmp_path):
-    _, _, _ = setup_images
-    output_path = tmp_path / "output.unknown"
-    with pytest.raises(ValueError):
-        convert_image("unsupported.format", str(output_path))
+    def test_unsupported_input_format(self):
+        invalid_input = os.path.join(self.test_dir, "test.txt")
+        with open(invalid_input, "w") as f:
+            f.write("This is not an image file")
+        with self.assertRaises(ValueError):
+            converter = ImageConverter(invalid_input, self.output_png, "png")
+            converter.convert()
 
-def test_unsupported_output_format(setup_images, tmp_path):
-    bmp_path, _, _ = setup_images
-    output_path = tmp_path / "output.unknown"
-    with pytest.raises(ValueError):
-        convert_image(str(bmp_path), str(output_path))
+    def test_unsupported_conversion(self):
+        invalid_output = os.path.join(self.test_dir, "test.gif")
+        with self.assertRaises(ValueError):
+            converter = ImageConverter(self.input_jpg, invalid_output, "gif")
+            converter.convert()
 
-def test_same_input_output_path(setup_images):
-    bmp_path, _, _ = setup_images
-    with pytest.raises(ValueError):
-        convert_image(str(bmp_path), str(bmp_path))
+    def test_same_input_output_format(self):
+        output_jpg = os.path.join(self.test_dir, "test_same.jpg")
+        converter = ImageConverter(self.input_jpg, output_jpg, "jpg")
+        converter.convert()
+        self.assertFalse(os.path.exists(output_jpg))  # Should not create a new file
 
-# Test Cases for Edge Cases
-def test_nonexistent_input_file(tmp_path):
-    nonexistent_path = tmp_path / "nonexistent.bmp"
-    output_path = tmp_path / "output.jpg"
-    with pytest.raises(FileNotFoundError):
-        convert_image(str(nonexistent_path), str(output_path))
+    def test_convert_image_function(self):
+        convert_image(self.input_jpg, self.output_png, "png")
+        self.assertTrue(os.path.exists(self.output_png))
+        with Image.open(self.output_png) as img:
+            self.assertEqual(img.format, "PNG")
 
-def test_invalid_file_path():
-    invalid_path = "/invalid/path/to/file.bmp"
-    with pytest.raises(ValueError):
-        convert_image(invalid_path, "output.jpg")
+    def test_supported_conversions_string(self):
+        supported_str = ImageConverter.supported_conversions()
+        self.assertIsInstance(supported_str, str)
+        self.assertIn("JPEG", supported_str)
+        self.assertIn("PNG", supported_str)
+        self.assertIn("BMP", supported_str)
+        self.assertIn("WebP", supported_str)
 
-# Utility Function Tests
-def test_supported_conversions():
-    expected_output = "Supported file formats and conversions:\n" \
-                      "JPEG: can be converted to JPEG (no conversion needed)\n" \
-                      "PNG: can be converted to PNG (no conversion needed)\n" \
-                      "BMP: can be converted to JPEG or PNG"
-    assert ImageConverter.supported_conversions() == expected_output
+
+if __name__ == "__main__":
+    unittest.main()

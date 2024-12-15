@@ -1,72 +1,128 @@
+# Formaverter
 
-# File Extension Converter
+## Description
+Formaverter is a Python tool that allows you to convert images between different formats using the Pillow library. It supports conversions between JPG, PNG, BMP, and WebP formats.
 
-## Convert image types, text files, and structured data betweenst their respective formats.
+## Features
+- Convert images between JPG, PNG, BMP, and WebP formats
+- Batch conversion of multiple images
+- Simple command-line interface
+- Skips conversion if the input and output formats are the same
 
-File Extension Converter is a Python program that allows you to convert files of various types to other formats. It supports the following conversions:
+## Installation
+To install Formaverter, you need Python 3.13 or later. You can install it using pip:
 
-* PNG to JPG
-* JPG to PNG
-* JSON to CSV
-* CSV to JSON
-* ODT to plain text
-* XML to JSON
+`pip install formaverter`
 
-## Prerequisites:
+## Usage
 
-* Python 3.x
-* Pillow
-* Odfpy
+### Using main.py directly as a CLI tool (Recommended)
 
-## Installation:
+If you've cloned the repository or downloaded the source code, you can use the `main.py` file directly:
 
-Clone the repository to your local machine.
+1. Navigate to the directory containing `main.py`
+2. Run the following command:
 
-Install the required dependencies by running
+   `python main.py <input_path> <output_path> <output_format>`
 
-`pip install -r requirements.txt`
+   The arguments are the same as described above.
 
-## How to Use:
+Example:
 
-1. Clone this repository or download the source code.
-2. Navigate to the directory containing the `main.py` script in your terminal or command prompt.
-3. To use the program, run python main.py from the command line. This will display the main menu
-4. Enter the number of the conversion you want to perform, followed by the full path to the file or directory you want to convert. The program will then convert the file(s) and save them in the same directory as the original file(s) with a new extension.
+`python main.py ./input_image.jpg ./output_image.png png`
 
-## Error Handling:
+For batch conversion:
 
-The tool provides basic error handling to ensure the validity of the input paths. If any errors occur during the conversion, they are displayed on the terminal.
+`python main.py ./input_directory ./output_directory png`
 
-## Reasoning and Intentions Behind the Project
+Note: When using `main.py` directly, make sure you have all the required dependencies installed in your Python environment.
 
-This project aims to be a one-stop solution for various file conversion needs. With a focus on modularity, each conversion type is implemented as a pluggable component, allowing for easy extension and integration into other projects. The goal is to empower developers and users alike to build faster and smarter.
+### Using the Formaverter package
 
-Future plans include adding automated webhook file pushing via Discord and potentially other services to make the tool even more versatile.
+You can use the Formaverter package directly from the command line:
 
-## Detailed Usage Guide
+`python -m image_converter <input_path> <output_path> <output_format>`
 
-### Setup
+- `<input_path>`: Path to the input image file or directory
+- `<output_path>`: Path to save the converted image(s)
+- `<output_format>`: Desired output format (jpg, png, bmp, or webp)
 
-1. Clone the repository.
-2. Install the required Python packages.
-3. Drop your files in to the 'data/' folder.
+Example:
 
-### Running the Program
+`python -m image_converter ./input_image.jpg ./output_image.png png`
 
-Execute `main.py` to start the application:
+For batch conversion, provide a directory as the input path:
 
-```bash
+`python -m image_converter ./input_directory ./output_directory png`
 
-python main.py
+### Using Formaverter in your own projects
 
+You can also import and use Formaverter in your own Python projects. Here's how:
+
+1. First, make sure you've installed Formaverter:
+
+   `pip install formaverter`
+
+2. In your Python script, import the necessary functions:
+
+   ```python
+   from formaverter import convert_image, ImageConverter
+   ```
+
+To convert a single image using the straightforward `convert_image` function:
+
+```python
+convert_image('path/to/input/image.jpg', 'path/to/output/image.png', 'png')
 ```
 
-You will be presented with a menu listing the available file conversion options. Enter the corresponding number for the conversion you wish to perform.
+To use the ImageConverter class directly:
 
-You can either specify a single file or a directory for batch conversion. For a single file, provide the full path, including the file name and extension. For a directory, provide the full directory path.
+```python
+converter = ImageConverter('path/to/input/image.jpg', 'path/to/output/image.png', 'png')
+converter.convert()
+```
 
-Converted files will be saved in the same directory as the original files but with new extensions.
+For batch conversion, you can use the collect_images function and loop through the results:
 
-### Logging
+```python
+from formaverter import collect_images, convert_image
+```
 
-Logs are saved in a file named `converter.log`. The log level is set to `INFO`.
+```python
+input_directory = 'path/to/input/directory'
+output_directory = 'path/to/output/directory'
+output_format = 'png'
+
+image_files = collect_images(input_directory)
+
+for input_path in image_files:
+    filename = os.path.basename(input_path)
+    name, _ = os.path.splitext(filename)
+    output_path = os.path.join(output_directory, f"{name}.{output_format}")
+    convert_image(input_path, output_path, output_format)
+```
+
+This allows you to integrate Formaverter's functionality into your own Python scripts or larger projects, giving you more control over the conversion process.
+
+## Dependencies
+- Pillow >= 11.0.0
+
+## Development
+To set up the development environment:
+
+1. Clone the repository
+2. Install PDM if you haven't already: `pip install pdm`
+3. Install dependencies: `pdm install`
+4. Run tests: ex. `python -m unittest .\tests\test_image_converter.py`
+
+## Contributing
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+This project is licensed under the GNU Affero General Public License. See the LICENSE file for details.
+
+## Author
+Daethyra <109057945+Daethyra@users.noreply.github.com>
+
+## Version
+2.0.0
