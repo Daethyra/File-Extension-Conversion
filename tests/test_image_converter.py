@@ -17,7 +17,8 @@ class TestImageConverter(unittest.TestCase):
         self.output_jpg = os.path.join(self.test_dir, 'test_output.jpg')
 
         # Create a test JPEG image
-        Image.new('RGB', (100, 100), color='red').save(self.input_jpg)
+        with Image.new('RGB', (100, 100), color='red') as img:
+            img.save(self.input_jpg)
 
     def tearDown(self):
         shutil.rmtree(self.test_dir)
@@ -26,7 +27,8 @@ class TestImageConverter(unittest.TestCase):
         converter = ImageConverter(self.input_jpg, self.output_png, 'png')
         converter.convert()
         self.assertTrue(os.path.exists(self.output_png))
-        self.assertEqual(Image.open(self.output_png).format, 'PNG')
+        with Image.open(self.output_png) as img:
+            self.assertEqual(img.format, 'PNG')
 
     def test_convert_jpg_to_jpg(self):
         converter = ImageConverter(self.input_jpg, self.output_jpg, 'jpg')
@@ -35,7 +37,8 @@ class TestImageConverter(unittest.TestCase):
 
     def test_unsupported_input_format(self):
         invalid_input = os.path.join(self.test_dir, 'test.txt')
-        open(invalid_input, 'w').close()
+        with open(invalid_input, 'w') as f:
+            f.write("This is not an image file")
         with self.assertRaises(ValueError):
             converter = ImageConverter(invalid_input, self.output_png, 'png')
             converter.convert()
@@ -55,7 +58,8 @@ class TestImageConverter(unittest.TestCase):
     def test_convert_image_function(self):
         convert_image(self.input_jpg, self.output_png, 'png')
         self.assertTrue(os.path.exists(self.output_png))
-        self.assertEqual(Image.open(self.output_png).format, 'PNG')
+        with Image.open(self.output_png) as img:
+            self.assertEqual(img.format, 'PNG')
 
     def test_supported_conversions_string(self):
         supported_str = ImageConverter.supported_conversions()
