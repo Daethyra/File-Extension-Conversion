@@ -1,11 +1,16 @@
+"""
+This module provides a class for converting images to different formats using Pillow. It also has a function to simplify implementing the conversion logic.
+"""
+
 import os
 from PIL import Image
 
 class ImageConverter:
     SUPPORTED_CONVERSIONS = {
-        '.jpg': {'.jpg'},
-        '.png': {'.png'},
-        '.bmp': {'.jpg', '.png'}
+        '.jpg': {'.jpg', '.png', '.bmp', '.webp'},
+        '.png': {'.jpg', '.png', '.bmp', '.webp'},
+        '.bmp': {'.jpg', '.png', '.bmp', '.webp'},
+        '.webp': {'.jpg', '.png', '.bmp', '.webp'}
     }
 
     def __init__(self, input_path: str, output_path: str):
@@ -30,32 +35,31 @@ class ImageConverter:
         output_ext = os.path.splitext(self.output_path)[1].lower()
 
         if input_ext not in self.SUPPORTED_CONVERSIONS:
-            raise ValueError(f"Unsupported input file format: {input_ext}. "
-                             f"Supported file formats and conversions: {self.supported_conversions()}")
+            raise ValueError(f"Unsupported input file format: {input_ext}. {self.supported_conversions()}")
 
         if output_ext not in self.SUPPORTED_CONVERSIONS[input_ext]:
-            raise ValueError(f"Unsupported output file format: {output_ext}. "
-                             f"Supported file formats and conversions: {self.supported_conversions()}")
+            raise ValueError(f"Unsupported conversion: {input_ext} to {output_ext}. {self.supported_conversions()}")
 
-        if input_ext == '.jpg' and output_ext == '.jpg':
-            if self.input_path != self.output_path:
-                os.replace(self.input_path, self.output_path)
-            else:
-                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
-        elif input_ext == '.png' and output_ext == '.png':
-            if self.input_path != self.output_path:
-                os.replace(self.input_path, self.output_path)
-            else:
-                raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
-        elif input_ext == '.bmp' and (output_ext == '.jpg' or output_ext == '.png'):
-            self._bmp_to_image(output_ext)
+        if input_ext == output_ext:
+            self._move_or_error()
         else:
-            raise ValueError(f"Conversion failed. Input: {self.input_path}, Output: {self.output_path}. "
-                             f"{self.supported_conversions()}")
+            self._convert_image(input_ext, output_ext)
 
-    def _bmp_to_image(self, output_ext: str) -> None:
+    def _convert_image(self, input_ext: str, output_ext: str) -> None:
+        """
+        Converts the input image to the specified output format using Pillow.
+        """
         img = Image.open(self.input_path)
         img.save(self.output_path, output_ext.upper())
+
+    def _move_or_error(self) -> None:
+        """
+        If the input and output paths are the same, move the file instead of re-saving it.
+        """
+        if self.input_path != self.output_path:
+            os.replace(self.input_path, self.output_path)
+        else:
+            raise ValueError(f"Input and output paths are the same: {self.input_path}. Please provide a different output path.")
 
     @staticmethod
     def supported_conversions() -> str:
@@ -66,9 +70,10 @@ class ImageConverter:
             str: A string with the supported file formats and conversions.
         """
         return "Supported file formats and conversions:\n" \
-               "JPEG: can be converted to JPEG (no conversion needed)\n" \
-               "PNG: can be converted to PNG (no conversion needed)\n" \
-               "BMP: can be converted to JPEG or PNG"
+               "JPEG: can be converted to JPEG, PNG, BMP, WebP\n" \
+               "PNG: can be converted to JPEG, PNG, BMP, WebP\n" \
+               "BMP: can be converted to JPEG, PNG, BMP, WebP\n" \
+               "WebP: can be converted to JPEG, PNG, BMP, WebP"
 
 
 def convert_image(input_path: str, output_path: str) -> None:
