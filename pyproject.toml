@@ -1,5 +1,6 @@
 [tool.pdm]
 distribution = true
+package-dir = "src"
 
 [tool.pdm.build]
 includes = []
