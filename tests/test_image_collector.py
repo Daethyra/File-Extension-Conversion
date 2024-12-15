@@ -3,10 +3,14 @@ import sys
 import os
 import tempfile
 import shutil
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'src')))
+
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src"))
+)
 
 from formaverter.image_collector import collect_images
 from formaverter.image_converter import ImageConverter
+
 
 class TestImageCollector(unittest.TestCase):
 
@@ -15,11 +19,11 @@ class TestImageCollector(unittest.TestCase):
         self.test_dir = tempfile.mkdtemp()
 
         # Create some test files
-        self.valid_images = ['test1.jpg', 'test2.png', 'test3.bmp', 'test4.webp']
-        self.invalid_files = ['test5.txt', 'test6.pdf', 'test7']
+        self.valid_images = ["test1.jpg", "test2.png", "test3.bmp", "test4.webp"]
+        self.invalid_files = ["test5.txt", "test6.pdf", "test7"]
 
         for filename in self.valid_images + self.invalid_files:
-            open(os.path.join(self.test_dir, filename), 'a').close()
+            open(os.path.join(self.test_dir, filename), "a").close()
 
     def tearDown(self):
         # Remove the directory after the test
@@ -37,7 +41,7 @@ class TestImageCollector(unittest.TestCase):
     def test_non_existent_directory(self):
         # Test if the function raises a ValueError for a non-existent directory
         with self.assertRaises(ValueError):
-            collect_images('/path/to/non/existent/directory')
+            collect_images("/path/to/non/existent/directory")
 
     def test_empty_directory(self):
         # Test if the function returns an empty list for an empty directory
@@ -54,5 +58,6 @@ class TestImageCollector(unittest.TestCase):
             _, ext = os.path.splitext(image)
             self.assertIn(ext.lower(), supported_extensions)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

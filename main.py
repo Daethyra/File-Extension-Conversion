@@ -5,8 +5,9 @@ Main module for image conversion. Handles both single image and directory proces
 import os
 import argparse
 from typing import List
-from src.image_converter import convert_image
-from src.image_collector import collect_images
+from formaverter.image_converter import convert_image
+from formaverter.image_collector import collect_images
+
 
 def process_images(input_path: str, output_path: str, output_format: str) -> List[str]:
     """
@@ -30,7 +31,9 @@ def process_images(input_path: str, output_path: str, output_format: str) -> Lis
 
     if os.path.isfile(input_path):
         # Single image processing
-        output_filename = f"{os.path.splitext(os.path.basename(input_path))[0]}.{output_format}"
+        output_filename = (
+            f"{os.path.splitext(os.path.basename(input_path))[0]}.{output_format}"
+        )
         output_file_path = os.path.join(output_path, output_filename)
         convert_image(input_path, output_file_path, output_format)
         if os.path.exists(output_file_path):
@@ -41,7 +44,9 @@ def process_images(input_path: str, output_path: str, output_format: str) -> Lis
         image_files = collect_images(input_path)
 
         for file_path in image_files:
-            output_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.{output_format}"
+            output_filename = (
+                f"{os.path.splitext(os.path.basename(file_path))[0]}.{output_format}"
+            )
             output_file_path = os.path.join(output_path, output_filename)
             try:
                 convert_image(file_path, output_file_path, output_format)
@@ -52,15 +57,22 @@ def process_images(input_path: str, output_path: str, output_format: str) -> Lis
 
     return converted_images
 
+
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Convert images to a specified format.")
+    parser = argparse.ArgumentParser(
+        description="Convert images to a specified format."
+    )
     parser.add_argument("input_path", help="Path to input image or directory")
     parser.add_argument("output_path", help="Path to output image or directory")
-    parser.add_argument("output_format", help="Desired output format (jpg, png, bmp, webp)")
+    parser.add_argument(
+        "output_format", help="Desired output format (jpg, png, bmp, webp)"
+    )
     args = parser.parse_args()
 
     try:
-        converted_files = process_images(args.input_path, args.output_path, args.output_format)
+        converted_files = process_images(
+            args.input_path, args.output_path, args.output_format
+        )
         print(f"Successfully converted {len(converted_files)} images.")
     except ValueError as e:
         print(f"Error: {str(e)}")

@@ -6,6 +6,7 @@ import os
 from typing import List
 from .image_converter import ImageConverter
 
+
 def collect_images(input_dir: str) -> List[str]:
     """
     Collects all supported image files from the input directory.
@@ -22,12 +23,17 @@ def collect_images(input_dir: str) -> List[str]:
     if not os.path.isdir(input_dir):
         raise ValueError(f"Input directory does not exist: {input_dir}")
 
-    supported_extensions = set(ImageConverter.SUPPORTED_CONVERSIONS.keys()) # {'.jpg', '.jpeg', '.png', '.bmp', '.webp'}
+    supported_extensions = set(
+        ImageConverter.SUPPORTED_CONVERSIONS.keys()
+    )  # {'.jpg', '.jpeg', '.png', '.bmp', '.webp'}
     image_files = []
 
     for filename in os.listdir(input_dir):
         file_path = os.path.join(input_dir, filename)
-        if os.path.isfile(file_path) and os.path.splitext(filename)[1].lower() in supported_extensions:
+        if (
+            os.path.isfile(file_path)
+            and os.path.splitext(filename)[1].lower() in supported_extensions
+        ):
             image_files.append(file_path)
 
     return image_files
