@@ -1,14 +1,3 @@
-[tool.pdm]
-distribution = true
-package-dir = "src"
-
-[tool.pdm.build]
-includes = []
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
-
 [project]
 name = "Formaverter"
 version = "2.0.0"
@@ -22,3 +11,18 @@ dependencies = [
 requires-python = "<4.0,>=3.13"
 readme = "README.md"
 license = {text = "GNU Aferro GPL"}
+
+[tool.pdm]
+distribution = true
+package-dir = "src"
+
+[tool.pdm.build]
+includes = []
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0",
+]
