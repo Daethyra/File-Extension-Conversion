@@ -1,167 +1,67 @@
+"""
+Main module for image conversion. Handles both single image and directory processing.
+"""
+
 import os
+import argparse
 from typing import List
-from loguru import logger
-from src.image_converter import convert_image
-from src.text_converter import convert_text
+from image_converter import convert_image
+from image_collector import collect_images
 
-
-def setup_logging() -> None:
+def process_images(input_path: str, output_path: str, output_format: str) -> List[str]:
     """
-    Sets up logging for the application.
-    """
-    logger.add("converter.log", level="INFO", format="{time}:{level}: {message}")
-
-
-setup_logging()
-
-
-def print_menu() -> None:
-    """
-    Prints the main menu for the file converter program.
-    """
-    print("""\
-╔══════════════════════════════════════════════════════════╗
-║                    File Converter                         ║
-╠══════════════════════════════════════════════════════════╣
-║ 1. Convert PNG to JPG.                                    ║
-║ 2. Convert JPG to PNG.                                    ║
-║ 3. Convert JSON to CSV.                                   ║
-║ 4. Convert CSV to JSON.                                   ║
-║ 5. Convert ODT to plain text.                             ║
-║ 6. Convert XML to JSON.                                   ║
-║                                                            ║
-║ Enter 'q' to quit.                                        ║
-║ Note: You can enter either a specific file or a directory  ║
-║ path when prompted.                                       ║
-║                                                            ║
-║ Hint:                                                     ║
-║ - To convert a single file, enter the full path to the     ║
-║   file including the file name and extension.             ║
-║ - To convert all files in a directory, enter the full path ║
-║   to the directory.                                       ║
-║ - Converted files will be saved in the same directory as  ║
-║   the original file with a new extension.                 ║
-╚══════════════════════════════════════════════════════════╝
-    """)
-
-
-def convert_files(paths: List[str], conversion_type: str) -> None:
-    """
-    Converts multiple files of the same type in batch.
+    Process images based on whether the input path is a single image or a directory.
 
     Args:
-        paths: A list of file paths to convert.
-        conversion_type: The type of conversion to perform.
-    """
-    for path in paths:
-        if os.path.isfile(path):
-            new_filename = os.path.splitext(path)[0] + convert_extension(conversion_type)
-            if conversion_type in ["png_to_jpg", "jpg_to_png"]:
-                convert_image(path, new_filename, conversion_type)
-            else:
-                convert_text(path, new_filename)
-            logger.info(f"Converted {path} to {new_filename}.")
-            print(f"Conversion of {path} to {new_filename} successful.")
-        elif os.path.isdir(path):
-            for file in os.listdir(path):
-                if file.lower().endswith(convert_extension(conversion_type)):
-                    input_path = os.path.join(path, file)
-                    output_path = os.path.join(path, os.path.splitext(file)[0] + convert_extension(conversion_type))
-                    if conversion_type in ["png_to_jpg", "jpg_to_png"]:
-                        convert_image(input_path, output_path, conversion_type)
-                    else:
-                        convert_text(input_path, output_path)
-            logger.info(f"{conversion_type.upper()} conversion in the specified directory is complete.")
-            print(f"{conversion_type.upper()} conversion in the specified directory is complete.")
-        else:
-            print(f"{path} is not a valid file or directory.")
-
-
-def convert_extension(conversion_type: str) -> str:
-    """
-    Returns the file extension for the specified conversion type.
-
-    Args:
-        conversion_type: The type of conversion.
+        input_path (str): Path to the input image file or directory.
+        output_path (str): Path to save the converted image file or directory.
+        output_format (str): Desired output format (e.g., 'jpg', 'png', 'bmp', 'webp').
 
     Returns:
-        str: The file extension for the specified conversion type.
+        List[str]: A list of paths to the converted images.
+
+    Raises:
+        ValueError: If the input path does not exist.
     """
-    if conversion_type == "png_to_jpg":
-        return ".jpg"
-    elif conversion_type == "jpg_to_png":
-        return ".png"
-    elif conversion_type == "json_to_csv":
-        return ".csv"
-    elif conversion_type == "csv_to_json":
-        return ".json"
-    elif conversion_type == "odt_to_txt":
-        return ".txt"
-    elif conversion_type == "xml_to_json":
-        return ".json"
-    else:
-        raise ValueError("Invalid conversion type!")
+    if not os.path.exists(input_path):
+        raise ValueError(f"Input path does not exist: {input_path}")
 
+    converted_images = []
 
-def main() -> None:
-    """
-    Runs the file converter program.
-    """
-    print_menu()
-    choice = input("Enter the number of your choice: ")
+    if os.path.isfile(input_path):
+        # Single image processing
+        output_filename = f"{os.path.splitext(os.path.basename(input_path))[0]}.{output_format}"
+        output_file_path = os.path.join(output_path, output_filename)
+        convert_image(input_path, output_file_path, output_format)
+        converted_images.append(output_file_path)
+    elif os.path.isdir(input_path):
+        # Directory processing
+        os.makedirs(output_path, exist_ok=True)
+        image_files = collect_images(input_path)
+        
+        if image_files:  # Only create output directory if we have images to convert
+            os.makedirs(output_path, exist_ok=True)
 
-    while choice != 'q':
-        try:
-            path = input("Enter the path of the file or directory to convert: ")
+        for file_path in image_files:
+            output_filename = f"{os.path.splitext(os.path.basename(file_path))[0]}.{output_format}"
+            output_file_path = os.path.join(output_path, output_filename)
+            try:
+                convert_image(file_path, output_file_path, output_format)
+                converted_images.append(output_file_path)
+            except ValueError as e:
+                print(f"Error converting {file_path}: {str(e)}")
 
-            if not os.path.exists(path):
-                print("Invalid path!")
-                continue
-
-            # Convert relative path to absolute path
-            path = os.path.abspath(path)
-
-            if choice == "1":
-                conversion_type = "png_to_jpg"
-            elif choice == "2":
-                conversion_type = "jpg_to_png"
-            elif choice == "3":
-                conversion_type = "json_to_csv"
-            elif choice == "4":
-                conversion_type = "csv_to_json"
-            elif choice == "5":
-                conversion_type = "odt_to_txt"
-            elif choice == "6":
-                conversion_type = "xml_to_json"
-            else:
-                print("Invalid choice!")
-                continue
-
-            if os.path.isfile(path):
-                convert_files([path], conversion_type)
-            elif os.path.isdir(path):
-                paths = [os.path.join(path, file) for file in os.listdir(path)]
-                convert_files(paths, conversion_type)
-            else:
-                print(f"{path} is not a valid file or directory.")
-
-            # Ask user if they want to continue
-            while True:
-                response = input("Do you want to continue? (y/n): ").lower()
-                if response in ["y", "yes"]:
-                    break
-                elif response in ["n", "no", "q", "quit", "exit", "\x1b", "\x03"]:
-                    choice = "q"
-                    break
-
-        except ValueError as e:
-            logger.error(f"An error occurred: {str(e)}")
-            print(f"An error occurred: {str(e)}")
-
-        if choice != "q":
-            print_menu()
-            choice = input("Enter the number of your choice: ")
-
+    return converted_images
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Convert images to a specified format.")
+    parser.add_argument("input_path", help="Path to input image or directory")
+    parser.add_argument("output_path", help="Path to output image or directory")
+    parser.add_argument("output_format", help="Desired output format (jpg, png, bmp, webp)")
+    args = parser.parse_args()
+
+    try:
+        converted_files = process_images(args.input_path, args.output_path, args.output_format)
+        print(f"Successfully converted {len(converted_files)} images.")
+    except ValueError as e:
+        print(f"Error: {str(e)}")
