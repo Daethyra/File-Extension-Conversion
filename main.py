@@ -5,8 +5,8 @@ Main module for image conversion. Handles both single image and directory proces
 import os
 import argparse
 from typing import List
-from image_converter import convert_image
-from image_collector import collect_images
+from src.image_converter import convert_image
+from src.image_collector import collect_images
 
 def process_images(input_path: str, output_path: str, output_format: str) -> List[str]:
     """

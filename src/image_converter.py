@@ -76,7 +76,7 @@ class ImageConverter:
                "WebP: can be converted to JPEG, PNG, BMP, WebP"
 
 
-def convert_image(input_path: str, output_path: str) -> None:
+def convert_image(input_path: str, output_path: str, output_format: str) -> None:
     """
     Converts an image to the desired format.
 
@@ -87,5 +87,5 @@ def convert_image(input_path: str, output_path: str) -> None:
     Raises:
         ValueError: If the input file format is not supported or the conversion is not possible.
     """
-    converter = ImageConverter(input_path, output_path)
+    converter = ImageConverter(input_path, output_path, output_format)
     converter.convert()
